@@ -14,27 +14,21 @@ class WasRun extends TestCase
 
   setup: ->
     @wasRun = false
-    @wasSetup = 1
+    @log = "setup "
 
   testMethod: ->
     @wasRun = 1
+    @log += "testMethod "
 
 class TestCaseTest extends TestCase
-
-  setup: ->
-    @test = new WasRun 'testMethod'
 
   assert: (bool) ->
      throw 'assertion failed' if(!bool)
 
-  testRunning: ->
-    @test.run()
-    @assert @test.wasRun
+  testTemplateMethod: ->
+    test = new WasRun 'testMethod'
+    test.run()
+    @assert "setup testMethod " == test.log
 
-  testSetup: ->
-    @test.run()
-    @assert @test.wasSetup
-
-(new TestCaseTest 'testRunning').run()
-(new TestCaseTest 'testSetup').run()
+(new TestCaseTest 'testTemplateMethod').run()
 
