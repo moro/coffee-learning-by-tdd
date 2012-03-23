@@ -6,7 +6,7 @@ class WasRun
     @wasRun = 1
 
   run: ->
-    this.testMethod()
+    this[@name]()
 
 test = new WasRun 'testMethod'
 console.log test.wasRun
