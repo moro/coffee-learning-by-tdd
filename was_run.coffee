@@ -13,9 +13,16 @@ class WasRun extends TestCase
   testMethod: ->
     @wasRun = 1
 
-test = new WasRun 'testMethod'
-console.log test.wasRun
+class TestCaseTest extends TestCase
 
-test.run()
-console.log test.wasRun
+  assert: (bool) ->
+     throw 'assertion failed' if(!bool)
 
+  testRunning: ->
+    test = new WasRun 'testMethod'
+    @assert !test.wasRun
+
+    test.run()
+    @assert test.wasRun
+
+(new TestCaseTest 'testRunning').run()
