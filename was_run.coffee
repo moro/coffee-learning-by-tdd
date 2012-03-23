@@ -6,10 +6,12 @@ class TestCase
   teardown: ->
 
   run: ->
+    result = new TestResult
+    result.testStarted()
     @setup()
     this[@name]()
     @teardown()
-    new TestResult
+    result
 
 class WasRun extends TestCase
 
@@ -21,6 +23,10 @@ class WasRun extends TestCase
 
   testMethod: ->
     @log += "testMethod "
+
+  testBrokenMethod: ->
+    throw 'broken'
+
   teardown: ->
     @log += "teardown "
 
@@ -39,10 +45,22 @@ class TestCaseTest extends TestCase
     result = test.run()
     @assert '1 run, 0 failed' == result.summary()
 
+  testFailedResult: ->
+    test = new WasRun 'testBrokenMethod'
+    result = test.run()
+    @assert '1 run, 1 failed' == result.summary()
+
 class TestResult
+  constructor: ->
+    @runCount = 0
+
+  testStarted: ->
+    @runCount += 1
+
   summary: ->
-    '1 run, 0 failed'
+    "#{@runCount} run, 0 failed"
 
 (new TestCaseTest 'testTemplateMethod').run()
 (new TestCaseTest 'testResult').run()
+# (new TestCaseTest 'testFailedResult').run()
 
