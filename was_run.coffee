@@ -9,6 +9,7 @@ class TestCase
     @setup()
     this[@name]()
     @teardown()
+    new TestResult
 
 class WasRun extends TestCase
 
@@ -33,5 +34,15 @@ class TestCaseTest extends TestCase
     test.run()
     @assert "setup testMethod teardown " == test.log
 
+  testResult: ->
+    test = new WasRun 'testMethod'
+    result = test.run()
+    @assert '1 run, 0 failed' == result.summary()
+
+class TestResult
+  summary: ->
+    '1 run, 0 failed'
+
 (new TestCaseTest 'testTemplateMethod').run()
+(new TestCaseTest 'testResult').run()
 
