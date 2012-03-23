@@ -50,17 +50,28 @@ class TestCaseTest extends TestCase
     result = test.run()
     @assert '1 run, 1 failed' == result.summary()
 
+  testFailedResultFormatting: ->
+    result = new TestResult
+    result.testStarted()
+    result.testFailed()
+    @assert '1 run, 1 failed' == result.summary()
+
 class TestResult
   constructor: ->
     @runCount = 0
+    @errorCount = 0
 
   testStarted: ->
     @runCount += 1
 
+  testFailed: ->
+    @errorCount += 1
+
   summary: ->
-    "#{@runCount} run, 0 failed"
+    "#{@runCount} run, #{@errorCount} failed"
 
 (new TestCaseTest 'testTemplateMethod').run()
 (new TestCaseTest 'testResult').run()
 # (new TestCaseTest 'testFailedResult').run()
+(new TestCaseTest 'testFailedResultFormatting').run()
 
