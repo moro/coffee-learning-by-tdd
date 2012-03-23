@@ -5,9 +5,12 @@ class WasRun
   testMethod: ->
     @wasRun = 1
 
+  run: ->
+    this.testMethod()
+
 test = new WasRun 'testMethod'
 console.log test.wasRun
 
-test.testMethod()
+test.run()
 console.log test.wasRun
 
