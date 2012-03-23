@@ -5,17 +5,41 @@ class TestCase
 
   teardown: ->
 
-  run: ->
-    result = new TestResult
+  run: (result) ->
     result.testStarted()
     @setup()
     try
       this[@name]()
     catch error
-      result.testFailed
+      result.testFailed()
 
     @teardown()
-    result
+
+class TestResult
+  constructor: ->
+    @runCount = 0
+    @errorCount = 0
+
+  testStarted: ->
+    @runCount += 1
+
+  testFailed: ->
+    @errorCount += 1
+
+  summary: ->
+    "#{@runCount} run, #{@errorCount} failed"
+
+class TestSuite
+  constructor: ->
+    @tests = []
+
+  add: (test)->
+    @tests = @tests.concat test
+
+  run: (result)->
+    for test in @tests
+      test.run(result)
+
 
 class WasRun extends TestCase
 
@@ -36,46 +60,50 @@ class WasRun extends TestCase
 
 class TestCaseTest extends TestCase
 
+  setup: ->
+    @result = new TestResult
+
   assert: (bool) ->
      throw 'assertion failed' if(!bool)
 
   testTemplateMethod: ->
     test = new WasRun 'testMethod'
-    test.run()
+    test.run(@result)
     @assert "setup testMethod teardown " == test.log
 
   testResult: ->
     test = new WasRun 'testMethod'
-    result = test.run()
-    @assert '1 run, 0 failed' == result.summary()
+    test.run(@result)
+    @assert '1 run, 0 failed' == @result.summary()
 
   testFailedResult: ->
     test = new WasRun 'testBrokenMethod'
-    result = test.run()
-    @assert '1 run, 1 failed' == result.summary()
+    test.run(@result)
+    @assert '1 run, 1 failed' == @result.summary()
 
   testFailedResultFormatting: ->
+    @result.testStarted()
+    @result.testFailed()
+    @assert '1 run, 1 failed' == @result.summary()
+
+  testSuite: ->
+    suite = new TestSuite
     result = new TestResult
-    result.testStarted()
-    result.testFailed()
-    @assert '1 run, 1 failed' == result.summary()
+    suite.add new WasRun 'testMethod'
+    suite.add new WasRun 'testBrokenMethod'
+    suite.run(result)
 
-class TestResult
-  constructor: ->
-    @runCount = 0
-    @errorCount = 0
+    @assert '2 run, 1 failed' == result.summary()
 
-  testStarted: ->
-    @runCount += 1
+suite = new TestSuite
+suite.add(new TestCaseTest 'testTemplateMethod')
+suite.add(new TestCaseTest 'testResult')
+suite.add(new TestCaseTest 'testFailedResult')
+suite.add(new TestCaseTest 'testFailedResultFormatting')
+suite.add(new TestCaseTest 'testSuite')
 
-  testFailed: ->
-    @errorCount += 1
+result = new TestResult
+suite.run(result)
 
-  summary: ->
-    "#{@runCount} run, #{@errorCount} failed"
-
-(new TestCaseTest 'testTemplateMethod').run()
-(new TestCaseTest 'testResult').run()
-(new TestCaseTest 'testFailedResult').run()
-(new TestCaseTest 'testFailedResultFormatting').run()
+console.log result.summary()
 
