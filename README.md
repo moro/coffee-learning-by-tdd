@@ -7,11 +7,12 @@ Original was written in Python, this is a try of Coffee Script.
 
 * call `teadown()` although test fails
 * run multiple tests
-* report results
+* report faild tests
 
 ## Done
 
 * call test method
 * call `setup()` first
 * call `teadown()` after that
+* report results
 
