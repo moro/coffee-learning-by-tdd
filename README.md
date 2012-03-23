@@ -5,7 +5,6 @@ Original was written in Python, this is a try of Coffee Script.
 
 ## Backlog
 
-* call `teadown()` after that
 * call `teadown()` although test fails
 * run multiple tests
 * report results
@@ -14,4 +13,5 @@ Original was written in Python, this is a try of Coffee Script.
 
 * call test method
 * call `setup()` first
+* call `teadown()` after that
 
