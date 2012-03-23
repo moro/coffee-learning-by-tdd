@@ -3,9 +3,12 @@ class TestCase
 
   setup: ->
 
+  teardown: ->
+
   run: ->
     @setup()
     this[@name]()
+    @teardown()
 
 class WasRun extends TestCase
 
@@ -13,12 +16,12 @@ class WasRun extends TestCase
     super(@name)
 
   setup: ->
-    @wasRun = false
     @log = "setup "
 
   testMethod: ->
-    @wasRun = 1
     @log += "testMethod "
+  teardown: ->
+    @log += "teardown "
 
 class TestCaseTest extends TestCase
 
@@ -28,7 +31,7 @@ class TestCaseTest extends TestCase
   testTemplateMethod: ->
     test = new WasRun 'testMethod'
     test.run()
-    @assert "setup testMethod " == test.log
+    @assert "setup testMethod teardown " == test.log
 
 (new TestCaseTest 'testTemplateMethod').run()
 
