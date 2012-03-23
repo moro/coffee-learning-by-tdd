@@ -9,7 +9,11 @@ class TestCase
     result = new TestResult
     result.testStarted()
     @setup()
-    this[@name]()
+    try
+      this[@name]()
+    catch error
+      result.testFailed
+
     @teardown()
     result
 
@@ -72,6 +76,6 @@ class TestResult
 
 (new TestCaseTest 'testTemplateMethod').run()
 (new TestCaseTest 'testResult').run()
-# (new TestCaseTest 'testFailedResult').run()
+(new TestCaseTest 'testFailedResult').run()
 (new TestCaseTest 'testFailedResultFormatting').run()
 
