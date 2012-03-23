@@ -40,6 +40,11 @@ class TestSuite
     for test in @tests
       test.run(result)
 
+  register: (testCase) ->
+    for k, v of testCase.prototype
+      if k.match(/^test/)
+        @add(new testCase k)
+
 
 class WasRun extends TestCase
 
@@ -95,15 +100,23 @@ class TestCaseTest extends TestCase
 
     @assert '2 run, 1 failed' == result.summary()
 
-suite = new TestSuite
-suite.add(new TestCaseTest 'testTemplateMethod')
-suite.add(new TestCaseTest 'testResult')
-suite.add(new TestCaseTest 'testFailedResult')
-suite.add(new TestCaseTest 'testFailedResultFormatting')
-suite.add(new TestCaseTest 'testSuite')
+  testSuiteRegister: ->
+    class SuiteRegisterTest extends TestCase
+      testSucess: ->
+      testFailure: ->
+        throw 'failure test'
 
-result = new TestResult
-suite.run(result)
+    suite = new TestSuite
+
+    suite.register(SuiteRegisterTest)
+    suite.run(@result)
+
+    @assert '2 run, 1 failed' == @result.summary()
+
+
+suite = new TestSuite
+suite.register(TestCaseTest)
+suite.run(result = new TestResult)
 
 console.log result.summary()
 
