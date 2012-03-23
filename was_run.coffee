@@ -1,23 +1,6 @@
-class TestCase
-  constructor: (@name) ->
+myUnit = require('./test_case')
 
-  setup: ->
-
-  teardown: ->
-
-  run: ->
-    result = new TestResult
-    result.testStarted()
-    @setup()
-    try
-      this[@name]()
-    catch error
-      result.testFailed
-
-    @teardown()
-    result
-
-class WasRun extends TestCase
+class WasRun extends myUnit.TestCase
 
   constructor: (@name) ->
     super(@name)
@@ -34,7 +17,7 @@ class WasRun extends TestCase
   teardown: ->
     @log += "teardown "
 
-class TestCaseTest extends TestCase
+class TestCaseTest extends myUnit.TestCase
 
   assert: (bool) ->
      throw 'assertion failed' if(!bool)
@@ -55,24 +38,10 @@ class TestCaseTest extends TestCase
     @assert '1 run, 1 failed' == result.summary()
 
   testFailedResultFormatting: ->
-    result = new TestResult
+    result = new myUnit.TestCase.TestResult
     result.testStarted()
     result.testFailed()
     @assert '1 run, 1 failed' == result.summary()
-
-class TestResult
-  constructor: ->
-    @runCount = 0
-    @errorCount = 0
-
-  testStarted: ->
-    @runCount += 1
-
-  testFailed: ->
-    @errorCount += 1
-
-  summary: ->
-    "#{@runCount} run, #{@errorCount} failed"
 
 (new TestCaseTest 'testTemplateMethod').run()
 (new TestCaseTest 'testResult').run()
