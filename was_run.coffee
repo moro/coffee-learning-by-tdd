@@ -93,12 +93,11 @@ class TestCaseTest extends TestCase
 
   testSuite: ->
     suite = new TestSuite
-    result = new TestResult
     suite.add new WasRun 'testMethod'
     suite.add new WasRun 'testBrokenMethod'
-    suite.run(result)
+    suite.run(@result)
 
-    @assert '2 run, 1 failed' == result.summary()
+    @assert '2 run, 1 failed' == @result.summary()
 
   testSuiteRegister: ->
     class SuiteRegisterTest extends TestCase
